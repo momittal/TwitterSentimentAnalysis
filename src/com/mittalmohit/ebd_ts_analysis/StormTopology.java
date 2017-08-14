@@ -5,6 +5,12 @@
  */
 package com.mittalmohit.ebd_ts_analysis;
 
+import com.mittalmohit.ebd_ts_analysis.spout.TweetSpout;
+import com.mittalmohit.ebd_ts_analysis.bolt.ParseTweetBolt;
+import com.mittalmohit.ebd_ts_analysis.bolt.WordCountBolt;
+import com.mittalmohit.ebd_ts_analysis.bolt.SinkTypeBolt;
+import com.mittalmohit.ebd_ts_analysis.bolt.BoltBuilder;
+import com.mittalmohit.ebd_ts_analysis.bolt.FinalBolt;
 import java.util.Properties;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -19,7 +25,8 @@ import org.apache.storm.utils.Utils;
  */
 public class StormTopology {
 
-    public static final String HDFS_STREAM = "hdfs-stream";
+    public static final String HDFS_STREAM = "hdfs-stream-full";
+    public static final String HDFS_WORD_COUNT = "hdfs-word-count";
 
     public StormTopology(String configFile) throws Exception {
 
@@ -31,10 +38,7 @@ public class StormTopology {
 
 //        Create tweet spout
         String customerKey, secretKey, accessToken, accessSecret;
-        customerKey = "7kvHWZGwJhVEop0LCkZ4mNykL";
-        secretKey = "qB4k10J80TdBkiIuDcorkY1PkURDyvQAlE9PxHLPXcH1ksTTF3";
-        accessToken = "100916947-5kLhqaUmB9Icl9eEBdgSjgZPxVH0u98MYT4OqPcu";
-        accessSecret = "IY0JJYDCIriPIJq2xwJlCunaVb48qsa74Uu4P8A6aDHfU";
+        
         TweetSpout tweetSpout = new TweetSpout(customerKey, secretKey, accessToken, accessSecret);
 
 //        Create Bolts
@@ -45,16 +49,19 @@ public class StormTopology {
         BoltBuilder boltBuilder = new BoltBuilder();
         SinkTypeBolt sinkTypeBolt = boltBuilder.buildSinkTypeBolt();
         HdfsBolt hdfsBolt = boltBuilder.buildHdfsBolt();
+        SinkTypeBolt sinkTypeBolt2 = boltBuilder.buildSinkTypeBolt();
+        HdfsBolt hdfsBolt2 = boltBuilder.buildHdfsBolt();
 
 //        Build Topology
         builder.setSpout("tweet-spout", tweetSpout, 1);
 
-//        builder.setBolt("parse-tweet-bolt", parseTweetBolt, 10).shuffleGrouping("tweet-spout");
-//
-//        builder.setBolt("word-count-bolt", wordCountBolt, 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
-//        builder.setBolt("final-bolt", finalBolt, 1).globalGrouping("word-count-bolt");
         builder.setBolt("sink-type-bolt", sinkTypeBolt, 1).shuffleGrouping("tweet-spout");
         builder.setBolt("hdfs-bolt", hdfsBolt, 1).shuffleGrouping("sink-type-bolt", HDFS_STREAM);
+
+        builder.setBolt("parse-tweet-bolt", parseTweetBolt, 10).shuffleGrouping("tweet-spout");
+        builder.setBolt("word-count-bolt", wordCountBolt, 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
+        builder.setBolt("sink-type-bolt-2", sinkTypeBolt2, 1).globalGrouping("word-count-bolt");
+        builder.setBolt("hdfs-bolt-2", hdfsBolt2, 1).shuffleGrouping("sink-type-bolt-2", HDFS_WORD_COUNT);
 
 //      Create Default Config Object
         Config conf = new Config();
