@@ -30,12 +30,18 @@ public class SinkTypeBolt extends BaseRichBolt {
 
         if (value.equals("newTweet")){
             String tweet = tuple.getString(1);
-            collector.emit(StormTopology.HDFS_STREAM, new Values("newTweetLine", tweet));
+            collector.emit(StormTopology.HDFS_STREAM, new Values(tweet));
         }
         else if (value.equals("word_count")){
             String word = tuple.getStringByField("word");
             Integer count = tuple.getIntegerByField("count");
             collector.emit(StormTopology.HDFS_WORD_COUNT,new Values(word,count));
+        }else if (value.equals("mentions")){
+            String user = tuple.getStringByField("user");
+            
+            String userMentions = tuple.getStringByField("userMentions");
+
+            collector.emit(StormTopology.HDFS_MENTIONS,new Values(user,userMentions));
         }
         
 
@@ -49,7 +55,8 @@ public class SinkTypeBolt extends BaseRichBolt {
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declareStream(StormTopology.HDFS_STREAM, new Fields("sinkType", "content"));
+        declarer.declareStream(StormTopology.HDFS_STREAM, new Fields("content"));
         declarer.declareStream(StormTopology.HDFS_WORD_COUNT, new Fields("sinkType", "content"));
+        declarer.declareStream(StormTopology.HDFS_MENTIONS, new Fields("user", "userMentions"));
     }
 }

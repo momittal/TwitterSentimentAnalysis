@@ -31,8 +31,8 @@ public class BoltBuilder {
     public HdfsBolt buildHdfsBolt() {
         RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
         SyncPolicy syncPolicy = new CountSyncPolicy(100);
-        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(5.0f, Units.MB);
-        FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter");
+        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(50.0f, Units.MB);
+        FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("tweets");
         String port = "9000";
         String host = "localhost";
         HdfsBolt bolt = new HdfsBolt()

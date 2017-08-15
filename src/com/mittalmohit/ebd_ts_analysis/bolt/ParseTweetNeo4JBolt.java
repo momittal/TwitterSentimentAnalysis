@@ -16,14 +16,16 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
+import twitter4j.User;
 
 /**
  *
  * @author mohit
  */
-public class ParseTweetBolt extends BaseRichBolt {
+public class ParseTweetNeo4JBolt extends BaseRichBolt {
 
     // To output tuples from this bolt to the count bolt
     OutputCollector collector;
@@ -44,32 +46,22 @@ public class ParseTweetBolt extends BaseRichBolt {
 
         try {
             JSONObject jsonStatus = new JSONObject(status);
-            String tweet = jsonStatus.getString("text");
-            
-            
-            
-            
-            StringTokenizer tokenizer = new StringTokenizer(tweet);
 
-            while(tokenizer.hasMoreTokens()) {
-                collector.emit(new Values(tokenizer.nextToken()));
-            }
-//            String delims = "[ .,?!]+";
-//            // now split the tweet into tokens
-//            String[] tokens = tweet.split(delims);
-//
-//            // for each token/word, emit it
-//            for (String token : tokens) {
-//                collector.emit(new Values(token));
-//            }
+            User user = (User) jsonStatus.getJSONObject("user");
+            String userScreenName = user.getScreenName();
+            JSONObject entities = jsonStatus.getJSONObject("entities");
+            JSONArray userMentions = entities.getJSONArray("user_mentions");
+
+            collector.emit(new Values("mentions", userScreenName, userMentions));
 
         } catch (JSONException ex) {
+            
         }
 
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("tweet-word"));
+        declarer.declare(new Fields("mentions", "user", "userMentions"));
     }
 }

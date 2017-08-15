@@ -11,6 +11,8 @@ import com.mittalmohit.ebd_ts_analysis.bolt.WordCountBolt;
 import com.mittalmohit.ebd_ts_analysis.bolt.SinkTypeBolt;
 import com.mittalmohit.ebd_ts_analysis.bolt.BoltBuilder;
 import com.mittalmohit.ebd_ts_analysis.bolt.FinalBolt;
+import com.mittalmohit.ebd_ts_analysis.bolt.ParseTweetNeo4JBolt;
+import com.mittalmohit.ebd_ts_analysis.bolt.Neo4JBolt;
 import java.util.Properties;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -27,6 +29,7 @@ public class StormTopology {
 
     public static final String HDFS_STREAM = "hdfs-stream-full";
     public static final String HDFS_WORD_COUNT = "hdfs-word-count";
+    public static final String HDFS_MENTIONS = "hdfs-mentions";
 
     public StormTopology(String configFile) throws Exception {
 
@@ -38,7 +41,10 @@ public class StormTopology {
 
 //        Create tweet spout
         String customerKey, secretKey, accessToken, accessSecret;
-        
+        customerKey = "ixvFfqeSO0iIBK9oiAhfAD7yN";
+        secretKey = "XvbaPmZSrkM2QFgGWI4ZnsbIwqXHXfzS5zNs3wWvqA95lldVEN";
+        accessToken = "100916947-5kLhqaUmB9Icl9eEBdgSjgZPxVH0u98MYT4OqPcu";
+        accessSecret = "IY0JJYDCIriPIJq2xwJlCunaVb48qsa74Uu4P8A6aDHfU";
         TweetSpout tweetSpout = new TweetSpout(customerKey, secretKey, accessToken, accessSecret);
 
 //        Create Bolts
@@ -51,6 +57,11 @@ public class StormTopology {
         HdfsBolt hdfsBolt = boltBuilder.buildHdfsBolt();
         SinkTypeBolt sinkTypeBolt2 = boltBuilder.buildSinkTypeBolt();
         HdfsBolt hdfsBolt2 = boltBuilder.buildHdfsBolt();
+        SinkTypeBolt sinkTypeBolt3 = boltBuilder.buildSinkTypeBolt();
+        HdfsBolt hdfsBolt3 = boltBuilder.buildHdfsBolt();
+
+        ParseTweetNeo4JBolt parseNeo4JBolt = new ParseTweetNeo4JBolt();
+        Neo4JBolt neo4JBolt = new Neo4JBolt();
 
 //        Build Topology
         builder.setSpout("tweet-spout", tweetSpout, 1);
@@ -62,6 +73,11 @@ public class StormTopology {
         builder.setBolt("word-count-bolt", wordCountBolt, 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
         builder.setBolt("sink-type-bolt-2", sinkTypeBolt2, 1).globalGrouping("word-count-bolt");
         builder.setBolt("hdfs-bolt-2", hdfsBolt2, 1).shuffleGrouping("sink-type-bolt-2", HDFS_WORD_COUNT);
+
+        // builder.setBolt("parse-neo4J-bolt", parseNeo4JBolt, 10).shuffleGrouping("tweet-spout");
+        // builder.setBolt("neo4J-bolt", neo4JBolt, 30).shuffleGrouping("parse-neo4J-bolt");
+        // builder.setBolt("sink-type-bolt-3", sinkTypeBolt3, 1).globalGrouping("neo4J-bolt");
+        // builder.setBolt("hdfs-bolt-3", hdfsBolt3, 1).globalGrouping("sink-type-bolt-3", HDFS_MENTIONS);
 
 //      Create Default Config Object
         Config conf = new Config();
@@ -81,7 +97,7 @@ public class StormTopology {
             cluster.submitTopology("StormTopology", conf, builder.createTopology());
 
 //          let the topology run for ____ seconds. Only for testing!
-            Utils.sleep(30000);
+            Utils.sleep(600000);
 
 //          kill the topology
             cluster.killTopology("StormTopology");
