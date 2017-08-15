@@ -1,0 +1,1 @@
+hadoop jar /media/sf_Twitter/EBD_TS_Hadoop/target/EBD_TS_Hadoop-1.0.jar com.mittalmohit.ebd_ts_hadoop.MrManager /testTwitter/fulltweetshdfs-bolt-2-0-1502775633868.txt /hadoopOutput/op.txt -no_case -skip /stop-words.txt -pos /pos-words.txt -neg /neg-words.txt

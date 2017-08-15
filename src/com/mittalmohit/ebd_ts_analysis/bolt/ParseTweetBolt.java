@@ -42,14 +42,10 @@ public class ParseTweetBolt extends BaseRichBolt {
         // get the 1st column 'tweet' from tuple
         String tweet = tuple.getString(1);
 
+        StringTokenizer tokenizer = new StringTokenizer(tweet);
 
-            
-            
-            
-            StringTokenizer tokenizer = new StringTokenizer(tweet);
-
-            while(tokenizer.hasMoreTokens()) {
-                collector.emit(new Values(tokenizer.nextToken()));
+        while(tokenizer.hasMoreTokens()) {
+            collector.emit(new Values(tokenizer.nextToken()));
             }
 
 
