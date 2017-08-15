@@ -42,10 +42,7 @@ public class StormTopology {
         int TOP_N = 5;
 //        Create tweet spout
         String customerKey, secretKey, accessToken, accessSecret;
-        customerKey = "ixvFfqeSO0iIBK9oiAhfAD7yN";
-        secretKey = "XvbaPmZSrkM2QFgGWI4ZnsbIwqXHXfzS5zNs3wWvqA95lldVEN";
-        accessToken = "100916947-5kLhqaUmB9Icl9eEBdgSjgZPxVH0u98MYT4OqPcu";
-        accessSecret = "IY0JJYDCIriPIJq2xwJlCunaVb48qsa74Uu4P8A6aDHfU";
+
         TweetSpout tweetSpout = new TweetSpout(customerKey, secretKey, accessToken, accessSecret);
 
 //        Create Bolts
