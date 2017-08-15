@@ -39,7 +39,7 @@ public class StormTopology {
     public static void main(String[] args) throws Exception {
 //      Create storm topology
         TopologyBuilder builder = new TopologyBuilder();
-
+        int TOP_N = 5;
 //        Create tweet spout
         String customerKey, secretKey, accessToken, accessSecret;
         customerKey = "ixvFfqeSO0iIBK9oiAhfAD7yN";
@@ -70,9 +70,11 @@ public class StormTopology {
 
         builder.setBolt("parse-tweet-bolt", parseTweetBolt, 10).shuffleGrouping("tweet-spout");
         builder.setBolt("word-count-bolt", wordCountBolt, 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
+        builder.setBolt("final-bolt", finalBolt, 1).globalGrouping("word-count-bolt");
+
         builder.setBolt("sink-type-bolt-2", sinkTypeBolt2, 1).globalGrouping("word-count-bolt");
         builder.setBolt("hdfs-bolt-2", hdfsBolt2, 1).shuffleGrouping("sink-type-bolt-2", HDFS_WORD_COUNT);
-        builder.setBolt("final-bolt", finalBolt, 1).shuffleGrouping("word-count-bolt");
+        
 
         // builder.setBolt("parse-neo4J-bolt", parseNeo4JBolt, 10).shuffleGrouping("tweet-spout");
         // builder.setBolt("neo4J-bolt", neo4JBolt, 30).shuffleGrouping("parse-neo4J-bolt");
@@ -97,7 +99,7 @@ public class StormTopology {
             cluster.submitTopology("StormTopology", conf, builder.createTopology());
 
 //          let the topology run for ____ seconds. Only for testing!
-            Utils.sleep(60000);
+            Utils.sleep(600000);
 
 //          kill the topology
             cluster.killTopology("StormTopology");

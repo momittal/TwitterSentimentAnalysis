@@ -6,6 +6,7 @@
 package com.mittalmohit.ebd_ts_analysis.bolt;
 
 import java.util.Map;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,15 @@ public class ParseTweetBolt extends BaseRichBolt {
     // To output tuples from this bolt to the count bolt
     OutputCollector collector;
 
+     private String[] skipWords = {"rt", "to", "me","la","on","that","que",
+    "followers","watch","know","not","have","like","I'm","new","good","do",
+    "more","es","te","followers","Followers","las","you","and","de","my","is",
+    "en","una","in","for","this","go","en","all","no","don't","up","are",
+    "http","http:","https","https:","http://","https://","with","just","your",
+    "para","want","your","you're","really","video","it's","when","they","their","much",
+    "would","what","them","todo","FOLLOW","retweet","RETWEET","even","right","like",
+    "bien","Like","will","Will","pero","Pero","can't","were","Can't","Were","TWITTER",
+    "make","take","This","from","about","como","esta","follows","followed"};
     @Override
     public void prepare(
             Map map,
@@ -45,8 +55,13 @@ public class ParseTweetBolt extends BaseRichBolt {
         StringTokenizer tokenizer = new StringTokenizer(tweet);
 
         while(tokenizer.hasMoreTokens()) {
-            collector.emit(new Values(tokenizer.nextToken()));
-            }
+            String token = tokenizer.nextToken();
+            if(token.length() > 3 && !Arrays.asList(skipWords).contains(token)){
+                if(token.startsWith("#")){
+                    collector.emit(new Values(token));
+                }
+            }    
+        }
 
 
     }

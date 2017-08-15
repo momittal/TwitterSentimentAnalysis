@@ -1,3 +1,18 @@
-http://vishnuviswanath.com/realtime-storm-kafka2.html
+java -jar target/RedisListener-1.0-SNAPSHOT-shaded.jar main.java.com.mittalmohit.redislistener.Program
 
-http://vishnuviswanath.com/realtime-storm-kafka3.html
+
+storm jar target/EBD_TS_Analysis-1.0-SNAPSHOT-shaded.jar com.mittalmohit.ebd_ts_analysis.StormTopology
+
+hadoop jar target/......	hdfs/input/filePath hdfs/output/filepath
+
+hadoop --> start-all.sh
+storm --> storm nimbus
+storm --> storm supervisor
+redis --> redis-server
+
+
+
+hadoop fs -ls
+hadoop fs -rm -r /testTwitter
+hadoop fs -copyToLocal / /home/mohit/Downloads/hdfsLocal
+hadoop fs -copyFromLocal /home/mohit/Downloads/SomeFile.txt /hdfs/path
