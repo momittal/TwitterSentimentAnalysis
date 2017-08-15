@@ -11,6 +11,7 @@ import com.mittalmohit.ebd_ts_analysis.bolt.WordCountBolt;
 import com.mittalmohit.ebd_ts_analysis.bolt.SinkTypeBolt;
 import com.mittalmohit.ebd_ts_analysis.bolt.BoltBuilder;
 import com.mittalmohit.ebd_ts_analysis.bolt.FinalBolt;
+
 import com.mittalmohit.ebd_ts_analysis.bolt.ParseTweetNeo4JBolt;
 import com.mittalmohit.ebd_ts_analysis.bolt.Neo4JBolt;
 import java.util.Properties;
@@ -56,12 +57,10 @@ public class StormTopology {
         SinkTypeBolt sinkTypeBolt = boltBuilder.buildSinkTypeBolt();
         HdfsBolt hdfsBolt = boltBuilder.buildHdfsBolt();
         SinkTypeBolt sinkTypeBolt2 = boltBuilder.buildSinkTypeBolt();
-        HdfsBolt hdfsBolt2 = boltBuilder.buildHdfsBolt();
-        SinkTypeBolt sinkTypeBolt3 = boltBuilder.buildSinkTypeBolt();
-        HdfsBolt hdfsBolt3 = boltBuilder.buildHdfsBolt();
+        HdfsBolt hdfsBolt2 = boltBuilder.buildWordCountHdfsBolt();
 
-        ParseTweetNeo4JBolt parseNeo4JBolt = new ParseTweetNeo4JBolt();
-        Neo4JBolt neo4JBolt = new Neo4JBolt();
+        // HdfsBolt tweetTexthdfsBolt = boltBuilder.buildHdfsBolt();
+
 
 //        Build Topology
         builder.setSpout("tweet-spout", tweetSpout, 1);
@@ -73,6 +72,7 @@ public class StormTopology {
         builder.setBolt("word-count-bolt", wordCountBolt, 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
         builder.setBolt("sink-type-bolt-2", sinkTypeBolt2, 1).globalGrouping("word-count-bolt");
         builder.setBolt("hdfs-bolt-2", hdfsBolt2, 1).shuffleGrouping("sink-type-bolt-2", HDFS_WORD_COUNT);
+        builder.setBolt("final-bolt", finalBolt, 1).shuffleGrouping("word-count-bolt");
 
         // builder.setBolt("parse-neo4J-bolt", parseNeo4JBolt, 10).shuffleGrouping("tweet-spout");
         // builder.setBolt("neo4J-bolt", neo4JBolt, 30).shuffleGrouping("parse-neo4J-bolt");
@@ -97,7 +97,7 @@ public class StormTopology {
             cluster.submitTopology("StormTopology", conf, builder.createTopology());
 
 //          let the topology run for ____ seconds. Only for testing!
-            Utils.sleep(600000);
+            Utils.sleep(60000);
 
 //          kill the topology
             cluster.killTopology("StormTopology");

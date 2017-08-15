@@ -32,7 +32,39 @@ public class BoltBuilder {
         RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
         SyncPolicy syncPolicy = new CountSyncPolicy(100);
         FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(50.0f, Units.MB);
-        FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("tweets");
+        FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("fulltweets");
+        String port = "9000";
+        String host = "localhost";
+        HdfsBolt bolt = new HdfsBolt()
+                .withFsUrl("hdfs://" + host + ":" + port)
+                .withFileNameFormat(fileNameFormat)
+                .withRecordFormat(format)
+                .withRotationPolicy(rotationPolicy)
+                .withSyncPolicy(syncPolicy);
+        return bolt;
+    }
+
+        public HdfsBolt buildTweetTextHdfsBolt() {
+        RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
+        SyncPolicy syncPolicy = new CountSyncPolicy(100);
+        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(50.0f, Units.MB);
+        FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("tweetText");
+        String port = "9000";
+        String host = "localhost";
+        HdfsBolt bolt = new HdfsBolt()
+                .withFsUrl("hdfs://" + host + ":" + port)
+                .withFileNameFormat(fileNameFormat)
+                .withRecordFormat(format)
+                .withRotationPolicy(rotationPolicy)
+                .withSyncPolicy(syncPolicy);
+        return bolt;
+    }
+
+            public HdfsBolt buildWordCountHdfsBolt() {
+        RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
+        SyncPolicy syncPolicy = new CountSyncPolicy(50);
+        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(5.0f, Units.MB);
+        FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("wc");
         String port = "9000";
         String host = "localhost";
         HdfsBolt bolt = new HdfsBolt()

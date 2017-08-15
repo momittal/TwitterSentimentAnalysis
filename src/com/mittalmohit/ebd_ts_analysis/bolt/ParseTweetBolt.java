@@ -40,12 +40,9 @@ public class ParseTweetBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         // get the 1st column 'tweet' from tuple
-        String status = tuple.getString(1);
+        String tweet = tuple.getString(1);
 
-        try {
-            JSONObject jsonStatus = new JSONObject(status);
-            String tweet = jsonStatus.getString("text");
-            
+
             
             
             
@@ -54,17 +51,7 @@ public class ParseTweetBolt extends BaseRichBolt {
             while(tokenizer.hasMoreTokens()) {
                 collector.emit(new Values(tokenizer.nextToken()));
             }
-//            String delims = "[ .,?!]+";
-//            // now split the tweet into tokens
-//            String[] tokens = tweet.split(delims);
-//
-//            // for each token/word, emit it
-//            for (String token : tokens) {
-//                collector.emit(new Values(token));
-//            }
 
-        } catch (JSONException ex) {
-        }
 
     }
 

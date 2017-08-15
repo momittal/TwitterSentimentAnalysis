@@ -12,13 +12,19 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisConnection;
+
 /**
  *
  * @author mohit
  */
 public class FinalBolt extends BaseRichBolt{
    
+  // place holder to keep the connection to redis
+  transient RedisConnection<String,String> redis;
 
+  
   @Override
   public void prepare(
       Map                     map,
@@ -26,20 +32,22 @@ public class FinalBolt extends BaseRichBolt{
       OutputCollector         outputCollector)
   {
     
+    // instantiate a redis connection
+    RedisClient client = new RedisClient("localhost",6379);
 
+    // initiate the actual connection
+    redis = client.connect();
     
   }
 
   @Override
   public void execute(Tuple tuple)
   {
-    // access the first column 'word'
-    String word = tuple.getStringByField("word");
+      String word = tuple.getStringByField("word");
+      Integer count = tuple.getIntegerByField("count");
 
-    // access the second column 'count'
-    Integer count = tuple.getIntegerByField("count");
-    
-    System.out.println(word + " --> " + count);
+      // publish the word count to redis using word as the key
+      redis.publish("TwitterWordCount", word + "|" + Long.toString(count));
     
   }
 

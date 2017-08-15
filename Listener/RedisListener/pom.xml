@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mittalmohit</groupId>
-    <artifactId>EBD_TS_Analysis</artifactId>
+    <artifactId>RedisListener</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -12,65 +12,18 @@
     </properties>
     
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/storm/storm -->
-        <!-- https://mvnrepository.com/artifact/org.apache.storm/storm-core -->
         <dependency>
-            <groupId>org.apache.storm</groupId>
-            <artifactId>storm-core</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/org.twitter4j/twitter4j-stream -->
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>4.0.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-stream</artifactId>
-            <version>4.0.4</version>
+            <groupId>com.lambdaworks</groupId>
+            <artifactId>lettuce</artifactId>
+            <version>2.3.3</version>
         </dependency>
         
-
-        <!-- https://mvnrepository.com/artifact/org.apache.storm/storm-hdfs -->
-        <!--For storm-hdfs integration -->
         <dependency>
-            <groupId>org.apache.storm</groupId>
-            <artifactId>storm-hdfs</artifactId>
-            <version>1.1.1</version>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.0.0</version>
             <type>jar</type>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/org.json/json -->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20170516</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
-            <type>jar</type>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-            <version>2.1.6</version>
-        </dependency>
-
-            <dependency>
-      <groupId>com.lambdaworks</groupId>
-      <artifactId>lettuce</artifactId>
-      <version>2.3.3</version>
-    </dependency>
-
     </dependencies>
     
     
@@ -105,7 +58,7 @@
                                     implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.mittalmohit.ebd_ts_analysis.StormTopology</mainClass>
+                                    <mainClass>main.java.com.mittalmohit.redislistener.Program</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

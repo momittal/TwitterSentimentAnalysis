@@ -77,11 +77,9 @@ public class TweetSpout extends BaseRichSpout {
 
             @Override
             public void onStatus(Status status) {
-                String statusString = (String) DataObjectFactory.getRawJSON(status);
-                User user = status.getUser();
-                HashtagEntity[] hashTagEntities = status.getHashtagEntities();
-                UserMentionEntity[] userMentions = status.getUserMentionEntities();
-                queue.offer(statusString);
+                // String statusString = (String) DataObjectFactory.getRawJSON(status);
+                String tweet = status.getText();
+                queue.offer(tweet);
             }
 
             @Override
