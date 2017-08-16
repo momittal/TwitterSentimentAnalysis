@@ -41,6 +41,7 @@ public class StormTopology {
         TopologyBuilder builder = new TopologyBuilder();
 //        Create tweet spout
         String customerKey, secretKey, accessToken, accessSecret;
+       
         TweetSpout tweetSpout = new TweetSpout(customerKey, secretKey, accessToken, accessSecret);
 
 //        Create Bolts
