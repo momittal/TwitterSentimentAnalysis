@@ -1,18 +1,28 @@
+
+
+//hadoop, redis and storm -start servers
+start-all.sh
+storm nimbus
+storm supervisor
+redis-server
+
+
+hadoop fs -rm -r /testTwitter
+
+hadoop fs -rm -r /sentiment
+
+
 java -jar target/RedisListener-1.0-SNAPSHOT-shaded.jar main.java.com.mittalmohit.redislistener.Program
 
 
 storm jar target/EBD_TS_Analysis-1.0-SNAPSHOT-shaded.jar com.mittalmohit.ebd_ts_analysis.StormTopology
 
-hadoop jar target/......	hdfs/input/filePath hdfs/output/filepath
+hadoop jar target/EBD_TS_Hadoop-1.0.jar com.mittalmohit.ebd_ts_hadoop.MrManager /testTwitter/fulltweetshdfs-bolt-3-0-1502840788925.txt /sentiment/
 
-hadoop --> start-all.sh
-storm --> storm nimbus
-storm --> storm supervisor
-redis --> redis-server
+hadoop fs -copyToLocal / /home/mohit/Downloads/data
 
 
+________________________________________________________________________________
+hadoop fs -copyFromLocal /home/mohit/Downloads/SomeFile.txt /hdfs/path
 
 hadoop fs -ls
-hadoop fs -rm -r /testTwitter
-hadoop fs -copyToLocal / /home/mohit/Downloads/hdfsLocal
-hadoop fs -copyFromLocal /home/mohit/Downloads/SomeFile.txt /hdfs/path
