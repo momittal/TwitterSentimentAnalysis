@@ -29,7 +29,7 @@ public class SinkTypeBolt extends BaseRichBolt {
 
 
         if (value.equals("newTweet")){
-            String tweet = tuple.getString(1);
+            String tweet = tuple.getString(1); 
             collector.emit(StormTopology.HDFS_STREAM, new Values(tweet));
         }
         else if (value.equals("word_count")){

@@ -17,9 +17,13 @@ java -jar target/RedisListener-1.0-SNAPSHOT-shaded.jar main.java.com.mittalmohit
 
 storm jar target/EBD_TS_Analysis-1.0-SNAPSHOT-shaded.jar com.mittalmohit.ebd_ts_analysis.StormTopology
 
-hadoop jar target/EBD_TS_Hadoop-1.0.jar com.mittalmohit.ebd_ts_hadoop.MrManager /testTwitter/fulltweetshdfs-bolt-3-0-1502840788925.txt /sentiment/
+
+hadoop jar target/EBD_TS_Hadoop-1.0.jar /testTwitter/fulltweetshdfs-bolt-3-0-1502908846096.txt /sentiment/
+
 
 hadoop fs -copyToLocal / /home/mohit/Downloads/data
+
+
 
 
 ________________________________________________________________________________

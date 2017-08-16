@@ -58,18 +58,18 @@
             <version>1.1.1</version>
             <type>jar</type>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
+        
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-            <version>2.1.6</version>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>1.2.1</version>
         </dependency>
-
-            <dependency>
-      <groupId>com.lambdaworks</groupId>
-      <artifactId>lettuce</artifactId>
-      <version>2.3.3</version>
-    </dependency>
+        
+        <dependency>
+            <groupId>com.lambdaworks</groupId>
+            <artifactId>lettuce</artifactId>
+            <version>2.3.3</version>
+        </dependency>
 
     </dependencies>
     

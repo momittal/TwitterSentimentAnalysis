@@ -49,18 +49,26 @@ public class ParseTweetBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        // get the 1st column 'tweet' from tuple
+        // get the tweet json string
         String tweet = tuple.getString(1);
+        String tweetText = "";
+        try {
+            //        get tweet text from json string
+            JSONObject tweetObj = new JSONObject(tweet);
+            tweetText = tweetObj.getString("tweetText");
+        } catch (JSONException ex) {
+            Logger.getLogger(ParseTweetBolt.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        StringTokenizer tokenizer = new StringTokenizer(tweetText);
 
-        StringTokenizer tokenizer = new StringTokenizer(tweet);
-
-        while(tokenizer.hasMoreTokens()) {
+        while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
-            if(token.length() > 3 && !Arrays.asList(skipWords).contains(token)){
-                if(token.startsWith("#")){
+            if (token.length() > 3 && !Arrays.asList(skipWords).contains(token)) {
+                if (token.startsWith("#")) {
                     collector.emit(new Values(token));
                 }
-            }    
+            }
         }
 
 

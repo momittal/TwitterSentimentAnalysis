@@ -16,10 +16,8 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
-import twitter4j.User;
 
 /**
  *
@@ -42,20 +40,25 @@ public class ParseTweetNeo4JBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         // get the 1st column 'tweet' from tuple
-        String status = tuple.getString(1);
-
+        String tweet = tuple.getString(1);
+        String tweetText = "", user = "", tweetId = "";
         try {
-            JSONObject jsonStatus = new JSONObject(status);
-
-            User user = (User) jsonStatus.getJSONObject("user");
-            String userScreenName = user.getScreenName();
-            JSONObject entities = jsonStatus.getJSONObject("entities");
-            JSONArray userMentions = entities.getJSONArray("user_mentions");
-
-            collector.emit(new Values("mentions", userScreenName, userMentions));
-
+            //        get tweet text from json string
+            JSONObject tweetObj = new JSONObject(tweet);
+            tweetText = tweetObj.getString("tweetText");
+            user = tweetObj.getString("user");
         } catch (JSONException ex) {
-            
+            Logger.getLogger(ParseTweetBolt.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        StringTokenizer tokenizer = new StringTokenizer(tweetText);
+
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            if (token.startsWith("@")) {
+                collector.emit(new Values("mentions", user, token));
+            }
+
         }
 
     }

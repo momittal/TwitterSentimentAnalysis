@@ -5,7 +5,6 @@
  */
 package com.mittalmohit.ebd_ts_analysis.spout;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -17,20 +16,16 @@ import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.utils.Utils;
+import org.json.JSONObject;
 import twitter4j.FilterQuery;
-import twitter4j.HashtagEntity;
 
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
-import twitter4j.TwitterObjectFactory;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.TwitterStream;
-import twitter4j.User;
-import twitter4j.UserMentionEntity;
-import twitter4j.json.DataObjectFactory;
 /**
  *
  * @author mohit
@@ -78,7 +73,13 @@ public class TweetSpout extends BaseRichSpout {
             @Override
             public void onStatus(Status status) {
                 // String statusString = (String) DataObjectFactory.getRawJSON(status);
-                String tweet = status.getText();
+                String tweetText = status.getText();
+                tweetText = tweetText.replace("\n", " ").replace("'", " ").replace("\"", " ").replace("\\", " ");
+                String user = status.getUser().getScreenName();
+                String tweetId = String.valueOf(status.getId());
+                
+                String tweet = "{\"tweetId\" : \"" + tweetId + "\" , \"user\" : \"" + user + "\" , \"tweetText\" : \"" + tweetText + "\"}";
+                
                 queue.offer(tweet);
             }
 

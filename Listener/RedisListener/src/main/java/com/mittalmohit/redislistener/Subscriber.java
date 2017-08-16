@@ -15,7 +15,7 @@ public class Subscriber extends JedisPubSub {
 
 	@Override
     public void onMessage(String channel, String message) {
-    	System.out.println(channel + " --mohit--" + message);
+    	System.out.println(channel+ " -- " + message);
   }
 
 	@Override
