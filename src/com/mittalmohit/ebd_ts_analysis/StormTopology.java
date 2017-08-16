@@ -41,7 +41,10 @@ public class StormTopology {
         TopologyBuilder builder = new TopologyBuilder();
 //        Create tweet spout
         String customerKey, secretKey, accessToken, accessSecret;
-       
+        customerKey = "ixvFfqeSO0iIBK9oiAhfAD7yN";
+        secretKey = "XvbaPmZSrkM2QFgGWI4ZnsbIwqXHXfzS5zNs3wWvqA95lldVEN";
+        accessToken = "100916947-5kLhqaUmB9Icl9eEBdgSjgZPxVH0u98MYT4OqPcu";
+        accessSecret = "IY0JJYDCIriPIJq2xwJlCunaVb48qsa74Uu4P8A6aDHfU";
         TweetSpout tweetSpout = new TweetSpout(customerKey, secretKey, accessToken, accessSecret);
 
 //        Create Bolts
@@ -54,9 +57,10 @@ public class StormTopology {
         HdfsBolt hdfsBolt = boltBuilder.buildHdfsBolt();
         SinkTypeBolt sinkTypeBolt2 = boltBuilder.buildSinkTypeBolt();
         HdfsBolt hdfsBolt2 = boltBuilder.buildWordCountHdfsBolt();
-
+        ParseTweetNeo4JBolt parseNeo4JBolt = new ParseTweetNeo4JBolt();
+        Neo4JBolt neo4JBolt = new Neo4JBolt();
         // HdfsBolt tweetTexthdfsBolt = boltBuilder.buildHdfsBolt();
-
+        
 
 //        Build Topology
         builder.setSpout("tweet-spout", tweetSpout, 1);
@@ -73,10 +77,8 @@ public class StormTopology {
         builder.setBolt("hdfs-bolt-2", hdfsBolt2, 1).shuffleGrouping("sink-type-bolt-2", HDFS_WORD_COUNT);
         
 
-        // builder.setBolt("parse-neo4J-bolt", parseNeo4JBolt, 10).shuffleGrouping("tweet-spout");
-        // builder.setBolt("neo4J-bolt", neo4JBolt, 30).shuffleGrouping("parse-neo4J-bolt");
-        // builder.setBolt("sink-type-bolt-3", sinkTypeBolt3, 1).globalGrouping("neo4J-bolt");
-        // builder.setBolt("hdfs-bolt-3", hdfsBolt3, 1).globalGrouping("sink-type-bolt-3", HDFS_MENTIONS);
+         builder.setBolt("parse-neo4J-bolt", parseNeo4JBolt, 10).shuffleGrouping("tweet-spout");
+         builder.setBolt("neo4J-bolt", neo4JBolt, 1).shuffleGrouping("parse-neo4J-bolt");
 
 //      Create Default Config Object
         Config conf = new Config();
@@ -96,7 +98,7 @@ public class StormTopology {
             cluster.submitTopology("StormTopology", conf, builder.createTopology());
 
 //          let the topology run for ____ seconds. Only for testing!
-            Utils.sleep(60000);
+            Utils.sleep(1200000);
 
 //          kill the topology
             cluster.killTopology("StormTopology");

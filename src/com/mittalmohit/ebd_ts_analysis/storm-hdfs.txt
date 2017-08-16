@@ -1,10 +1,11 @@
 
 
-//hadoop, redis and storm -start servers
+//hadoop, redis and storm -start servers 
 start-all.sh
 storm nimbus
 storm supervisor
 redis-server
+sudo service neo4j start
 
 
 hadoop fs -rm -r /testTwitter
@@ -23,10 +24,11 @@ hadoop jar target/EBD_TS_Hadoop-1.0.jar /testTwitter/fulltweetshdfs-bolt-3-0-150
 
 hadoop fs -copyToLocal / /home/mohit/Downloads/data
 
-
+pig PositivePercentage.pig
 
 
 ________________________________________________________________________________
 hadoop fs -copyFromLocal /home/mohit/Downloads/SomeFile.txt /hdfs/path
 
 hadoop fs -ls
+

@@ -113,7 +113,7 @@ public class TweetSpout extends BaseRichSpout {
         twitterStream.addListener(listener);
 
         // Filter keywords
-        String[] keyWords = {"Trump"};
+        String[] keyWords = {"Trump", "Potus"};
         FilterQuery query = new FilterQuery().track(keyWords);
         twitterStream.filter(query);
 //        twitterStream.sample("en");
