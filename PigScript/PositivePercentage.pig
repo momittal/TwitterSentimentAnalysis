@@ -29,7 +29,7 @@ PercJoin = CROSS Pos_Count,Neg_Count, Neut_Count, Sentiments_Count;
 
 Perc = FOREACH PercJoin GENERATE (float)($0 * 100) / $3 AS posPerc, (float)($1 * 100) / $3 AS negPerc, (float)($2 * 100) / $3 AS neutPerc;
 
-DUMP Perc;
+STORE Perc INTO '/sentiment/pigOutput' USING PigStorage('\t');
 
 
 
