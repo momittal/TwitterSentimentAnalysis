@@ -98,7 +98,7 @@ public class StormTopology {
             cluster.submitTopology("StormTopology", conf, builder.createTopology());
 
 //          let the topology run for ____ seconds. Only for testing!
-            Utils.sleep(1200000);
+            Utils.sleep(30000);
 
 //          kill the topology
             cluster.killTopology("StormTopology");

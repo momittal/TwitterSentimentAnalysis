@@ -40,6 +40,7 @@ public class Neo4JBolt extends BaseRichBolt {
         // save the collector for emitting tuples
         collector = outputCollector;
         driver = GraphDatabase.driver( "bolt://localhost:7687", AuthTokens.basic( "neo4j", "mohit" ) );
+        // driver = GraphDatabase.driver( "bolt://localhost:7474", AuthTokens.basic( "neo4j", "mohit" ) );
         session = driver.session();
 
     }

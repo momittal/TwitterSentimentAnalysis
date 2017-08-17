@@ -2,6 +2,7 @@
 
 //hadoop, redis and storm -start servers 
 start-all.sh
+zkServer.sh start
 storm nimbus
 storm supervisor
 redis-server
@@ -10,7 +11,7 @@ sudo service neo4j start
 
 hadoop fs -rm -r /testTwitter
 
-hadoop fs -rm -r /sentiment
+hadoop fs -rm -r /senti*
 
 
 java -jar target/RedisListener-1.0-SNAPSHOT-shaded.jar main.java.com.mittalmohit.redislistener.Program
@@ -21,11 +22,9 @@ storm jar target/EBD_TS_Analysis-1.0-SNAPSHOT-shaded.jar com.mittalmohit.ebd_ts_
 
 hadoop jar target/EBD_TS_Hadoop-1.0.jar /testTwitter/fulltweetshdfs-bolt-3-0-1502908846096.txt /sentiment/
 
-
-hadoop fs -copyToLocal / /home/mohit/Downloads/data
-
 pig PositivePercentage.pig
 
+hadoop fs -copyToLocal / /home/mohit/Downloads/data
 
 ________________________________________________________________________________
 hadoop fs -copyFromLocal /home/mohit/Downloads/SomeFile.txt /hdfs/path
