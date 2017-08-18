@@ -3,31 +3,57 @@
 //hadoop, redis and storm -start servers 
 start-all.sh
 zkServer.sh start
+sudo service neo4j start
 storm nimbus
 storm supervisor
 redis-server
-sudo service neo4j start
-
 
 hadoop fs -rm -r /testTwitter
 
 hadoop fs -rm -r /senti*
 
 
-java -jar target/RedisListener-1.0-SNAPSHOT-shaded.jar main.java.com.mittalmohit.redislistener.Program
+java -jar Listener/RedisListener/target/RedisListener-1.0-SNAPSHOT-shaded.jar main.java.com.mittalmohit.redislistener.Program
 
 
 storm jar target/EBD_TS_Analysis-1.0-SNAPSHOT-shaded.jar com.mittalmohit.ebd_ts_analysis.StormTopology
 
 
-hadoop jar target/EBD_TS_Hadoop-1.0.jar /testTwitter/fulltweetshdfs-bolt-3-0-1502908846096.txt /sentiment/
+hadoop fs -copyFromLocal /media/sf_shared/EBD_TS_Hadoop/AFINN.txt /AFINN.txt
 
-pig PositivePercentage.pig
+hadoop fs -ls /testTwitter
+
+hadoop jar EBD_TS_Hadoop/target/EBD_TS_Hadoop-1.0.jar /testTwitter/fulltweetshdfs-bolt-3-0-1503012335020.txt /sentiment/
+
+hadoop fs -ls /
+
+pig PigScript/SentimentPercentage.pig
+
+pig PigScript/TopNHashTags.pig
 
 hadoop fs -copyToLocal / /home/mohit/Downloads/data
 
+
 ________________________________________________________________________________
+
+MATCH (n:User) RETURN COUNT(n);
+
+MATCH (n:User) RETURN n;
+
+MATCH (n:User)-[r:Mentioned]->(m:User) RETURN COUNT(r);
+
+MATCH (n:User)-[r:Mentioned]->(m:User) WHERE m.name="@realDonaldTrump" RETURN COUNT(r);
+
+MATCH (n:User)-[r:Mentioned]->(m:User) WHERE m.name="@POTUS" RETURN COUNT(r);
+
+//Top 5 Most Mentioned Users
+START n=NODE(*) MATCH r = ()-[:Mentioned]->(n) RETURN n,COUNT(r) as COUNT ORDER BY COUNT DESC LIMIT 5;
+
+
+________________________________________________________________________________
+
+
 hadoop fs -copyFromLocal /home/mohit/Downloads/SomeFile.txt /hdfs/path
 
-hadoop fs -ls
+hadoop fs -ls /
 

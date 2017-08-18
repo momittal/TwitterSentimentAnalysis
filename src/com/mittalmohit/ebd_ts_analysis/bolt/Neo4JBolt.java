@@ -48,14 +48,18 @@ public class Neo4JBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         // get the word from the 1st column of incoming tuple
-        String user = (String) tuple.getValueByField("user");
-        String userMentioned = (String) tuple.getValueByField("userMentions");
-        
-//        See if users exists or not -> if not then create users and then create relationship (relationships can be duplicated)
-        String query = "MERGE (a:User {name: \"" + user + "\"}) MERGE (b:User { name : \"" +  userMentioned + "\" }) CREATE (a)-[r:Mentioned]->(b) RETURN a,type(r), b";
- 
-        session.run(query);
-        collector.emit(new Values(""));
+        try{
+                String user = (String) tuple.getValueByField("user");
+                String userMentioned = (String) tuple.getValueByField("userMentions");
+                
+        //        See if users exists or not -> if not then create users and then create relationship (relationships can be duplicated)
+                String query = "MERGE (a:User {name: \"" + user + "\"}) MERGE (b:User { name : \"" +  userMentioned + "\" }) CREATE (a)-[r:Mentioned]->(b) RETURN a,type(r), b";
+         
+                session.run(query);
+                collector.emit(new Values(""));
+        }catch(Exception e){
+            System.out.println("Exception : " + e.getMessage());
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ public class BoltBuilder {
     public HdfsBolt buildHdfsBolt() {
         RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
         SyncPolicy syncPolicy = new CountSyncPolicy(100);
-        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(50.0f, Units.MB);
+        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(500.0f, Units.MB);
         FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("fulltweets");
         String port = "9000";
         String host = "localhost";
@@ -47,7 +47,7 @@ public class BoltBuilder {
         public HdfsBolt buildTweetTextHdfsBolt() {
         RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
         SyncPolicy syncPolicy = new CountSyncPolicy(100);
-        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(50.0f, Units.MB);
+        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(500.0f, Units.MB);
         FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("tweetText");
         String port = "9000";
         String host = "localhost";
@@ -63,7 +63,7 @@ public class BoltBuilder {
             public HdfsBolt buildWordCountHdfsBolt() {
         RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter("|");
         SyncPolicy syncPolicy = new CountSyncPolicy(50);
-        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(5.0f, Units.MB);
+        FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(500.0f, Units.MB);
         FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/testTwitter").withPrefix("wc");
         String port = "9000";
         String host = "localhost";
